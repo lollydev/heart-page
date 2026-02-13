@@ -1,0 +1,108 @@
+html 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>I Love You</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 40px;
+    font-family: Arial, sans-serif;
+  }
+
+  #heart {
+    position: relative;
+    width: 320px; /* smaller for mobile */
+    height: 320px;
+    margin-bottom: 50px;
+    transform: scale(1);
+    animation: beatIdle 2s infinite ease-in-out;
+  }
+
+  #heart span {
+    position: absolute;
+    color: #ffb6c1;
+    font-size: 12px;
+    white-space: nowrap;
+    will-change: transform; /* optimize for mobile */
+  }
+
+  @keyframes beatIdle {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+
+  .player {
+    width: 90%;
+    max-width: 300px;
+    text-align: center;
+    margin-left: 20px; /* player slightly right */
+  }
+
+  .tap {
+    color: #ffb6c1;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="heart"></div>
+
+<div class="player">
+  <div class="tap">Tap to play music 🎵</div>
+  <iframe
+    style="border-radius:12px"
+    src="https://open.spotify.com/embed/track/2VYnlKxB8jpbCeLUjQsebc"
+    width="100%" height="80"
+    frameborder="0"
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+  </iframe>
+</div>
+
+<script>
+  const heart = document.getElementById("heart");
+  const text = "I love you ";
+  const total = 120; // reduce number of spans for mobile
+  const spans = [];
+
+  for (let i = 0; i < total; i++) {
+    const span = document.createElement("span");
+    span.textContent = text;
+    heart.appendChild(span);
+    spans.push(span);
+  }
+
+  let angleOffset = 0;
+  function animateHeart() {
+    for (let i = 0; i < total; i++) {
+      const t = (i * 2 * Math.PI / total) + angleOffset;
+      const x = 16 * Math.pow(Math.sin(t), 3);
+      const y = 13 * Math.cos(t) 
+                - 5 * Math.cos(2*t) 
+                - 2 * Math.cos(3*t) 
+                - Math.cos(4*t);
+
+      // Use transform for smoother mobile performance
+      spans[i].style.transform = `translate(${160 + x * 10}px, ${160 - y * 10}px)`;
+    }
+    angleOffset += 0.006; // slightly slower for mobile
+    requestAnimationFrame(animateHeart);
+  }
+
+  animateHeart();
+</script>
+
+</body>
+</html>
